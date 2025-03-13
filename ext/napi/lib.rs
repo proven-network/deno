@@ -317,7 +317,7 @@ impl Drop for NapiState {
         .env_cleanup_hooks
         .borrow()
         .iter()
-        .any(|pair| pair.0 == hook.0 && pair.1 == hook.1)
+        .any(|pair| std::ptr::fn_addr_eq(pair.0, hook.0) && pair.1 == hook.1)
       {
         continue;
       }
@@ -327,10 +327,9 @@ impl Drop for NapiState {
       }
 
       {
-        self
-          .env_cleanup_hooks
-          .borrow_mut()
-          .retain(|pair| !(pair.0 == hook.0 && pair.1 == hook.1));
+        self.env_cleanup_hooks.borrow_mut().retain(|pair| {
+          !(std::ptr::fn_addr_eq(pair.0, hook.0) && pair.1 == hook.1)
+        });
       }
     }
   }
@@ -474,7 +473,10 @@ impl Env {
     data: *mut c_void,
   ) {
     let mut hooks = self.cleanup_hooks.borrow_mut();
-    if hooks.iter().any(|pair| pair.0 == hook && pair.1 == data) {
+    if hooks
+      .iter()
+      .any(|pair| std::ptr::fn_addr_eq(pair.0, hook) && pair.1 == data)
+    {
       panic!("Cannot register cleanup hook with same data twice");
     }
     hooks.push((hook, data));
@@ -488,7 +490,7 @@ impl Env {
     let mut hooks = self.cleanup_hooks.borrow_mut();
     match hooks
       .iter()
-      .rposition(|&pair| pair.0 == hook && pair.1 == data)
+      .rposition(|&pair| std::ptr::fn_addr_eq(pair.0, hook) && pair.1 == data)
     {
       Some(index) => {
         hooks.remove(index);
