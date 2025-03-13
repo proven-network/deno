@@ -3,6 +3,7 @@
 #![allow(non_camel_case_types)]
 #![allow(non_upper_case_globals)]
 #![allow(clippy::undocumented_unsafe_blocks)]
+#![allow(unpredictable_function_pointer_comparisons)]
 #![deny(clippy::missing_safety_doc)]
 
 //! Symbols to be exported are now defined in this JSON file.
