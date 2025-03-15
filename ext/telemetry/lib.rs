@@ -746,15 +746,14 @@ pub fn init(
     DenoIdGenerator::random()
   };
 
-  let _ = OTEL_GLOBALS
-    .set(OtelGlobals {
-      log_processor,
-      span_processor,
-      id_generator,
-      meter_provider,
-      builtin_instrumentation_scope,
-      config,
-    });
+  let _ = OTEL_GLOBALS.set(OtelGlobals {
+    log_processor,
+    span_processor,
+    id_generator,
+    meter_provider,
+    builtin_instrumentation_scope,
+    config,
+  });
 
   Ok(())
 }
