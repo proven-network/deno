@@ -1181,6 +1181,7 @@ static ENV_VARIABLES_HELP: &str = cstr!(
   <g>DENO_TRACE_PERMISSIONS</> Environmental variable to enable stack traces in permission prompts.
                          Possible values: "system", "mozilla".
                           <p(245)>(defaults to "mozilla")</>
+  <g>FORCE_COLOR</>            Set force color output even if stdout isn't a tty
   <g>HTTP_PROXY</>             Proxy address for HTTP requests
                           <p(245)>(module downloads, fetch)</>
   <g>HTTPS_PROXY</>            Proxy address for HTTPS requests
@@ -1934,7 +1935,7 @@ Under the hood, it bundles a slimmed down version of the Deno runtime along with
 JavaScript or TypeScript code.
 
 Cross-compiling to different target architectures is supported using the <c>--target</> flag.
-On the first invocation with deno will download the proper binary and cache it in <c>$DENO_DIR</>.
+On the first invocation of `deno compile`, Deno will download the relevant binary and cache it in <c>$DENO_DIR</>.
 
 <y>Read more:</> <c>https://docs.deno.com/go/compile</>
 "),
