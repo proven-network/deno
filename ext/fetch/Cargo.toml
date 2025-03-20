@@ -34,6 +34,7 @@ hyper-rustls.workspace = true
 hyper-util.workspace = true
 ipnet.workspace = true
 percent-encoding.workspace = true
+rustls-pki-types.workspace = true
 rustls-webpki.workspace = true
 serde.workspace = true
 serde_json.workspace = true
