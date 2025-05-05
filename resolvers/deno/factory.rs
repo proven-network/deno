@@ -479,7 +479,7 @@ impl<TSys: WorkspaceFactorySys> WorkspaceFactory<TSys> {
             local_path.clone(),
             global_cache,
             deno_cache_dir::GlobalToLocalCopy::Allow,
-            self.jsr_url().clone(),
+            // self.jsr_url().clone(),
           );
           Ok(new_rc(local_cache).into())
         }
