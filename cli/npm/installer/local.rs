@@ -39,16 +39,16 @@ use sys_traits::FsDirEntry;
 use sys_traits::FsReadDir;
 
 use super::common::bin_entries;
+use super::common::NpmPackageExtraInfoProvider;
 use super::common::NpmPackageFsInstaller;
+use super::CliNpmCache;
+use super::CliNpmTarballCache;
 use super::PackageCaching;
+use super::WorkspaceNpmPatchPackages;
 use crate::args::LifecycleScriptsConfig;
 use crate::args::NpmInstallDepsProvider;
 use crate::cache::CACHE_PERM;
 use crate::colors;
-use crate::npm::installer::common::NpmPackageExtraInfoProvider;
-use crate::npm::CliNpmCache;
-use crate::npm::CliNpmTarballCache;
-use crate::npm::WorkspaceNpmPatchPackages;
 use crate::sys::CliSys;
 use crate::util::fs::clone_dir_recursive;
 use crate::util::fs::symlink_dir;
@@ -1050,7 +1050,7 @@ struct SetupCacheData {
 /// cache what we've setup on the last run and only update what is necessary.
 /// Obviously this could lead to issues if the cache gets out of date with the
 /// file system, such as if the user manually deletes a symlink.
-struct SetupCache {
+pub struct SetupCache {
   file_path: PathBuf,
   previous: Option<SetupCacheData>,
   current: SetupCacheData,
@@ -1085,6 +1085,14 @@ impl SetupCache {
       .ok()
     });
     true
+  }
+
+  pub fn remove_root_symlink(&mut self, name: &str) {
+    self.current.root_symlinks.remove(name);
+  }
+
+  pub fn remove_deno_symlink(&mut self, name: &str) {
+    self.current.deno_symlinks.remove(name);
   }
 
   /// Inserts and checks for the existence of a root symlink
@@ -1139,7 +1147,7 @@ impl SetupCache {
     }
   }
 
-  pub fn with_dep(&mut self, parent_name: &str) -> SetupCacheDep<'_> {
+  fn with_dep(&mut self, parent_name: &str) -> SetupCacheDep<'_> {
     SetupCacheDep {
       previous: self
         .previous

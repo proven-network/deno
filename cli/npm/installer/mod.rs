@@ -12,6 +12,7 @@ use deno_npm::NpmSystemInfo;
 use deno_resolver::npm::managed::NpmResolutionCell;
 use deno_runtime::colors;
 use deno_semver::package::PackageReq;
+pub use local::SetupCache;
 use rustc_hash::FxHashSet;
 
 pub use self::common::NpmPackageFsInstaller;
@@ -19,14 +20,14 @@ use self::global::GlobalNpmPackageInstaller;
 use self::local::LocalNpmPackageInstaller;
 pub use self::resolution::AddPkgReqsResult;
 pub use self::resolution::NpmResolutionInstaller;
+use super::CliNpmCache;
+use super::CliNpmTarballCache;
 use super::NpmResolutionInitializer;
 use super::WorkspaceNpmPatchPackages;
 use crate::args::CliLockfile;
 use crate::args::LifecycleScriptsConfig;
 use crate::args::NpmInstallDepsProvider;
 use crate::args::PackageJsonDepValueParseWithLocationError;
-use crate::npm::CliNpmCache;
-use crate::npm::CliNpmTarballCache;
 use crate::sys::CliSys;
 use crate::util::progress_bar::ProgressBar;
 
