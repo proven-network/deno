@@ -475,6 +475,15 @@ pub struct BundleFlags {
   pub code_splitting: bool,
   pub one_file: bool,
   pub packages: PackageHandling,
+  pub sourcemap: Option<SourceMapType>,
+  pub platform: BundlePlatform,
+  pub watch: bool,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Copy)]
+pub enum BundlePlatform {
+  Browser,
+  Deno,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Copy)]
@@ -484,12 +493,29 @@ pub enum BundleFormat {
   Iife,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq, Copy)]
+pub enum SourceMapType {
+  Linked,
+  Inline,
+  External,
+}
+
 impl std::fmt::Display for BundleFormat {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self {
       BundleFormat::Esm => write!(f, "esm"),
       BundleFormat::Cjs => write!(f, "cjs"),
       BundleFormat::Iife => write!(f, "iife"),
+    }
+  }
+}
+
+impl std::fmt::Display for SourceMapType {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    match self {
+      SourceMapType::Linked => write!(f, "linked"),
+      SourceMapType::Inline => write!(f, "inline"),
+      SourceMapType::External => write!(f, "external"),
     }
   }
 }
@@ -1926,15 +1952,30 @@ fn bundle_subcommand() -> Command {
       _ => Err(clap::Error::new(clap::error::ErrorKind::InvalidValue)),
     }
   }
+  fn platform_parser(s: &str) -> Result<BundlePlatform, clap::Error> {
+    match s {
+      "browser" => Ok(BundlePlatform::Browser),
+      "deno" => Ok(BundlePlatform::Deno),
+      _ => Err(clap::Error::new(clap::error::ErrorKind::InvalidValue)),
+    }
+  }
+  fn sourcemap_parser(s: &str) -> Result<SourceMapType, clap::Error> {
+    match s {
+      "linked" => Ok(SourceMapType::Linked),
+      "inline" => Ok(SourceMapType::Inline),
+      "external" => Ok(SourceMapType::External),
+      _ => Err(clap::Error::new(clap::error::ErrorKind::InvalidValue)),
+    }
+  }
   command(
     "bundle",
     "Output a single JavaScript file with all dependencies.
 
-  deno bundle https://deno.land/std/examples/colors.ts colors.bundle.js
+  deno bundle jsr:@std/http/file-server -o file-server.bundle.js
 
 If no output file is given, the output is written to standard output:
 
-  deno bundle https://deno.land/std/examples/colors.ts
+  deno bundle jsr:@std/http/file-server
 ",
     UnstableArgsConfig::ResolutionOnly,
   )
@@ -1974,6 +2015,7 @@ If no output file is given, the output is written to standard output:
       .arg(
         Arg::new("format")
           .long("format")
+          .num_args(1)
           .value_parser(clap::builder::ValueParser::new(format_parser))
           .default_value("esm"),
       )
@@ -1981,6 +2023,7 @@ If no output file is given, the output is written to standard output:
         Arg::new("packages")
           .long("packages")
           .help("How to handle packages. Accepted values are 'bundle' or 'external'")
+          .num_args(1)
           .value_parser(clap::builder::ValueParser::new(packages_parser))
           .default_value("bundle"),
       )
@@ -2006,6 +2049,30 @@ If no output file is given, the output is written to standard output:
           .value_parser(value_parser!(bool))
           .num_args(0..=1)
           .action(ArgAction::Set),
+      )
+      .arg(
+        Arg::new("sourcemap")
+          .long("sourcemap")
+          .help("Generate source map. Accepted values are 'linked', 'inline', or 'external'")
+          .require_equals(true)
+          .default_missing_value("linked")
+          .value_parser(clap::builder::ValueParser::new(sourcemap_parser))
+          .num_args(0..=1)
+          .action(ArgAction::Set),
+      )
+      .arg(
+        Arg::new("watch")
+          .long("watch")
+          .help("Watch and rebuild on changes")
+          .action(ArgAction::SetTrue),
+      )
+      .arg(
+        Arg::new("platform")
+          .long("platform")
+          .help("Platform to bundle for. Accepted values are 'browser' or 'deno'")
+          .num_args(1)
+          .value_parser(clap::builder::ValueParser::new(platform_parser))
+          .default_value("deno"),
       )
       .arg(allow_scripts_arg())
       .arg(allow_import_arg())
@@ -4826,8 +4893,10 @@ fn bundle_parse(
   let outdir = matches.remove_one::<String>("outdir");
   compile_args_without_check_parse(flags, matches)?;
   unstable_args_parse(flags, matches, UnstableArgsConfig::ResolutionAndRuntime);
+  allow_import_parse(flags, matches)?;
   flags.subcommand = DenoSubcommand::Bundle(BundleFlags {
     entrypoints: file.collect(),
+    watch: matches.get_flag("watch"),
     output_path: output,
     output_dir: outdir,
     external: matches
@@ -4839,6 +4908,8 @@ fn bundle_parse(
     minify: matches.get_flag("minify"),
     code_splitting: matches.get_flag("code-splitting"),
     one_file: matches.get_flag("one-file"),
+    platform: matches.remove_one::<BundlePlatform>("platform").unwrap(),
+    sourcemap: matches.remove_one::<SourceMapType>("sourcemap"),
   });
   Ok(())
 }
@@ -6103,7 +6174,7 @@ fn reload_arg_parse(
 }
 
 fn ca_file_arg_parse(flags: &mut Flags, matches: &mut ArgMatches) {
-  flags.ca_data = matches.remove_one::<String>("cert").map(CaData::File);
+  flags.ca_data = matches.remove_one::<String>("cert").and_then(CaData::parse);
 }
 
 fn enable_testing_features_arg_parse(
@@ -9732,6 +9803,28 @@ mod tests {
           "script.ts".to_string(),
         )),
         ca_data: Some(CaData::File("example.crt".to_owned())),
+        code_cache_enabled: true,
+        ..Flags::default()
+      }
+    );
+  }
+
+  #[test]
+  fn run_with_base64_cafile() {
+    let r = flags_from_vec(svec![
+      "deno",
+      "run",
+      "--cert",
+      "base64:bWVvdw==",
+      "script.ts"
+    ]);
+    assert_eq!(
+      r.unwrap(),
+      Flags {
+        subcommand: DenoSubcommand::Run(RunFlags::new_default(
+          "script.ts".to_string(),
+        )),
+        ca_data: Some(CaData::Bytes(b"meow".into())),
         code_cache_enabled: true,
         ..Flags::default()
       }
