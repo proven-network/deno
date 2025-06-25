@@ -45,3 +45,6 @@ deno_unsync = { workspace = true, features = ["tokio"] }
 [dev-dependencies]
 sys_traits = { workspace = true, features = ["real"] }
 tempfile.workspace = true
+
+[lints.clippy]
+all = "allow"

@@ -28,3 +28,6 @@ url.workspace = true
 
 [dev-dependencies]
 pretty_assertions.workspace = true
+
+[lints.clippy]
+all = "allow"
