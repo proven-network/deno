@@ -8,10 +8,10 @@ use std::path::PathBuf;
 
 use deno_error::JsErrorBox;
 use deno_path_util::url_to_file_path;
-use futures::FutureExt;
-use futures::StreamExt;
 use futures::future::LocalBoxFuture;
 use futures::stream::FuturesUnordered;
+use futures::FutureExt;
+use futures::StreamExt;
 use once_cell::sync::Lazy;
 use serde::Deserialize;
 use serde::Serialize;
@@ -20,6 +20,8 @@ use sys_traits::FsMetadata;
 use sys_traits::FsRead;
 use url::Url;
 
+use crate::errors::ModuleNotFoundError;
+use crate::resolution::NodeResolverRc;
 use crate::InNpmPackageChecker;
 use crate::IsBuiltInNodeModuleChecker;
 use crate::NodeResolutionKind;
@@ -29,8 +31,6 @@ use crate::PathClean;
 use crate::ResolutionMode;
 use crate::UrlOrPath;
 use crate::UrlOrPathRef;
-use crate::errors::ModuleNotFoundError;
-use crate::resolution::NodeResolverRc;
 
 #[derive(Debug, Clone)]
 pub enum CjsAnalysis<'a> {
@@ -114,12 +114,12 @@ pub struct CjsModuleExportAnalyzer<
 }
 
 impl<
-  TCjsCodeAnalyzer: CjsCodeAnalyzer,
-  TInNpmPackageChecker: InNpmPackageChecker,
-  TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
-  TNpmPackageFolderResolver: NpmPackageFolderResolver,
-  TSys: FsCanonicalize + FsMetadata + FsRead,
->
+    TCjsCodeAnalyzer: CjsCodeAnalyzer,
+    TInNpmPackageChecker: InNpmPackageChecker,
+    TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
+    TNpmPackageFolderResolver: NpmPackageFolderResolver,
+    TSys: FsCanonicalize + FsMetadata + FsRead,
+  >
   CjsModuleExportAnalyzer<
     TCjsCodeAnalyzer,
     TInNpmPackageChecker,
@@ -561,12 +561,12 @@ pub enum NodeCodeTranslatorMode {
 }
 
 impl<
-  TCjsCodeAnalyzer: CjsCodeAnalyzer,
-  TInNpmPackageChecker: InNpmPackageChecker,
-  TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
-  TNpmPackageFolderResolver: NpmPackageFolderResolver,
-  TSys: NodeCodeTranslatorSys,
->
+    TCjsCodeAnalyzer: CjsCodeAnalyzer,
+    TInNpmPackageChecker: InNpmPackageChecker,
+    TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
+    TNpmPackageFolderResolver: NpmPackageFolderResolver,
+    TSys: NodeCodeTranslatorSys,
+  >
   NodeCodeTranslator<
     TCjsCodeAnalyzer,
     TInNpmPackageChecker,

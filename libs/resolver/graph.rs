@@ -4,6 +4,7 @@ use std::borrow::Cow;
 
 use boxed_error::Boxed;
 use deno_error::JsErrorClass;
+use deno_graph::source::ResolveError;
 use deno_graph::JsrLoadError;
 use deno_graph::Module;
 use deno_graph::ModuleError;
@@ -13,7 +14,6 @@ use deno_graph::ModuleLoadError;
 use deno_graph::Resolution;
 use deno_graph::ResolutionError;
 use deno_graph::SpecifierError;
-use deno_graph::source::ResolveError;
 use deno_media_type::MediaType;
 use deno_semver::npm::NpmPackageNvReference;
 use deno_semver::npm::NpmPackageReqReference;
@@ -26,14 +26,14 @@ use node_resolver::NpmPackageFolderResolver;
 use node_resolver::UrlOrPath;
 use url::Url;
 
-use crate::DenoResolveError;
-use crate::DenoResolverSys;
-use crate::RawDenoResolverRc;
 use crate::cjs::CjsTracker;
 use crate::deno_json::JsxImportSourceConfigResolver;
 use crate::npm;
-use crate::workspace::MappedResolutionDiagnostic;
 use crate::workspace::sloppy_imports_resolve;
+use crate::workspace::MappedResolutionDiagnostic;
+use crate::DenoResolveError;
+use crate::DenoResolverSys;
+use crate::RawDenoResolverRc;
 
 #[allow(clippy::disallowed_types)]
 pub type FoundPackageJsonDepFlagRc =
@@ -190,11 +190,11 @@ pub struct DenoResolver<
 }
 
 impl<
-  TInNpmPackageChecker: InNpmPackageChecker,
-  TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
-  TNpmPackageFolderResolver: NpmPackageFolderResolver,
-  TSys: DenoResolverSys,
-> std::fmt::Debug
+    TInNpmPackageChecker: InNpmPackageChecker,
+    TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
+    TNpmPackageFolderResolver: NpmPackageFolderResolver,
+    TSys: DenoResolverSys,
+  > std::fmt::Debug
   for DenoResolver<
     TInNpmPackageChecker,
     TIsBuiltInNodeModuleChecker,
@@ -208,11 +208,11 @@ impl<
 }
 
 impl<
-  TInNpmPackageChecker: InNpmPackageChecker,
-  TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
-  TNpmPackageFolderResolver: NpmPackageFolderResolver,
-  TSys: DenoResolverSys,
->
+    TInNpmPackageChecker: InNpmPackageChecker,
+    TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
+    TNpmPackageFolderResolver: NpmPackageFolderResolver,
+    TSys: DenoResolverSys,
+  >
   DenoResolver<
     TInNpmPackageChecker,
     TIsBuiltInNodeModuleChecker,
@@ -450,11 +450,11 @@ pub struct DenoGraphResolverAdapter<
 }
 
 impl<
-  TInNpmPackageChecker: InNpmPackageChecker,
-  TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
-  TNpmPackageFolderResolver: NpmPackageFolderResolver,
-  TSys: DenoResolverSys,
-> std::fmt::Debug
+    TInNpmPackageChecker: InNpmPackageChecker,
+    TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
+    TNpmPackageFolderResolver: NpmPackageFolderResolver,
+    TSys: DenoResolverSys,
+  > std::fmt::Debug
   for DenoGraphResolverAdapter<
     '_,
     TInNpmPackageChecker,
@@ -469,11 +469,11 @@ impl<
 }
 
 impl<
-  TInNpmPackageChecker: InNpmPackageChecker,
-  TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
-  TNpmPackageFolderResolver: NpmPackageFolderResolver,
-  TSys: DenoResolverSys,
-> deno_graph::source::Resolver
+    TInNpmPackageChecker: InNpmPackageChecker,
+    TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
+    TNpmPackageFolderResolver: NpmPackageFolderResolver,
+    TSys: DenoResolverSys,
+  > deno_graph::source::Resolver
   for DenoGraphResolverAdapter<
     '_,
     TInNpmPackageChecker,
@@ -857,11 +857,11 @@ pub fn format_deno_graph_error(err: &dyn std::error::Error) -> String {
 
 #[cfg(test)]
 mod test {
+  use deno_graph::source::ResolveError;
   use deno_graph::PositionRange;
   use deno_graph::Range;
   use deno_graph::ResolutionError;
   use deno_graph::SpecifierError;
-  use deno_graph::source::ResolveError;
 
   use super::*;
 

@@ -10,11 +10,11 @@ use std::path::PathBuf;
 
 use boxed_error::Boxed;
 use deno_error::JsError;
+use deno_semver::npm::NpmVersionReqParseError;
+use deno_semver::package::PackageReq;
 use deno_semver::StackString;
 use deno_semver::VersionReq;
 use deno_semver::VersionReqSpecifierParseError;
-use deno_semver::npm::NpmVersionReqParseError;
-use deno_semver::package::PackageReq;
 use indexmap::IndexMap;
 use serde::Serialize;
 use serde_json::Map;

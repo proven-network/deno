@@ -3,8 +3,8 @@ use std::borrow::Cow;
 use std::cell::RefCell;
 use std::cell::RefMut;
 use std::ffi::c_void;
-use std::future::Future;
 use std::future::poll_fn;
+use std::future::Future;
 use std::marker::PhantomData;
 use std::mem::MaybeUninit;
 use std::pin::Pin;
@@ -14,6 +14,10 @@ use std::task::Poll;
 use std::task::Waker;
 
 use bytes::BytesMut;
+use deno_core::external;
+use deno_core::op2;
+use deno_core::serde_v8::V8Slice;
+use deno_core::unsync::TaskQueue;
 use deno_core::AsyncResult;
 use deno_core::BufView;
 use deno_core::CancelFuture;
@@ -25,10 +29,6 @@ use deno_core::RcLike;
 use deno_core::RcRef;
 use deno_core::Resource;
 use deno_core::ResourceId;
-use deno_core::external;
-use deno_core::op2;
-use deno_core::serde_v8::V8Slice;
-use deno_core::unsync::TaskQueue;
 use futures::TryFutureExt;
 
 #[derive(Debug, thiserror::Error, deno_error::JsError)]
@@ -620,8 +620,8 @@ impl Drop for ReadableStreamResourceData {
 #[cfg(test)]
 mod tests {
   use std::cell::OnceCell;
-  use std::sync::OnceLock;
   use std::sync::atomic::AtomicUsize;
+  use std::sync::OnceLock;
   use std::time::Duration;
 
   use deno_core::v8;

@@ -8,6 +8,9 @@ use std::rc::Rc;
 use std::task::Poll;
 
 use bytes::Bytes;
+use deno_core::error::ResourceError;
+use deno_core::op2;
+use deno_core::serde::Serialize;
 use deno_core::AsyncRefCell;
 use deno_core::BufView;
 use deno_core::ByteString;
@@ -18,21 +21,18 @@ use deno_core::OpState;
 use deno_core::RcRef;
 use deno_core::Resource;
 use deno_core::ResourceId;
-use deno_core::error::ResourceError;
-use deno_core::op2;
-use deno_core::serde::Serialize;
-use deno_net::raw::NetworkStream;
 use deno_net::raw::take_network_stream_resource;
+use deno_net::raw::NetworkStream;
 use h2;
 use h2::Reason;
 use h2::RecvStream;
 use http;
-use http::HeaderMap;
-use http::Response;
-use http::StatusCode;
 use http::header::HeaderName;
 use http::header::HeaderValue;
 use http::request::Parts;
+use http::HeaderMap;
+use http::Response;
+use http::StatusCode;
 use url::Url;
 
 pub struct Http2Client {

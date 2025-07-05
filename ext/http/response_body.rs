@@ -10,10 +10,10 @@ use brotli::enc::encode::BrotliEncoderStateStruct;
 use brotli::writer::StandardAlloc;
 use bytes::Bytes;
 use bytes::BytesMut;
+use deno_core::futures::FutureExt;
 use deno_core::AsyncResult;
 use deno_core::BufView;
 use deno_core::Resource;
-use deno_core::futures::FutureExt;
 use deno_error::JsErrorBox;
 use flate2::write::GzEncoder;
 use hyper::body::Frame;
@@ -491,7 +491,11 @@ fn max_compressed_size(input_size: usize) -> usize {
   let overhead = 2 + (4 * num_large_blocks) + 3 + 1;
   let result = input_size + overhead;
 
-  if result < input_size { 0 } else { result }
+  if result < input_size {
+    0
+  } else {
+    result
+  }
 }
 
 impl PollFrame for BrotliResponseStream {

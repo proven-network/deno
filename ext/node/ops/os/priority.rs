@@ -15,11 +15,11 @@ pub enum PriorityError {
 
 #[cfg(unix)]
 mod impl_ {
-  use errno::Errno;
   use errno::errno;
   use errno::set_errno;
-  use libc::PRIO_PROCESS;
+  use errno::Errno;
   use libc::id_t;
+  use libc::PRIO_PROCESS;
 
   const PRIORITY_HIGH: i32 = -14;
 

@@ -18,8 +18,6 @@ use std::rc::Rc;
 
 use os_pipe::pipe;
 
-use crate::HttpServerGuard;
-use crate::TempDir;
 use crate::assertions::assert_wildcard_match;
 use crate::assertions::assert_wildcard_match_with_logger;
 use crate::deno_exe_path;
@@ -36,6 +34,8 @@ use crate::pty::Pty;
 use crate::strip_ansi_codes;
 use crate::testdata_path;
 use crate::tests_path;
+use crate::HttpServerGuard;
+use crate::TempDir;
 
 // Gives the developer a nice error message if they have a deno configuration
 // file that will be auto-discovered by the tests and cause a lot of failures.

@@ -15,9 +15,9 @@ use std::task::Poll;
 
 use deno_core::futures::TryFutureExt;
 use deno_tls::rustls::ClientConfig as TlsConfig;
-use http::Uri;
 use http::header::HeaderValue;
 use http::uri::Scheme;
+use http::Uri;
 use hyper_rustls::HttpsConnector;
 use hyper_rustls::MaybeHttpsStream;
 use hyper_util::client::legacy::connect::Connected;
@@ -28,8 +28,8 @@ use percent_encoding::percent_decode_str;
 use tokio::net::TcpStream;
 #[cfg(not(windows))]
 use tokio::net::UnixStream;
-use tokio_rustls::TlsConnector;
 use tokio_rustls::client::TlsStream;
+use tokio_rustls::TlsConnector;
 use tokio_socks::tcp::Socks5Stream;
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 use tokio_vsock::VsockStream;

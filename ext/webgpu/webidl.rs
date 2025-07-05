@@ -3,7 +3,6 @@
 use std::borrow::Cow;
 use std::collections::HashSet;
 
-use deno_core::WebIDL;
 use deno_core::cppgc::Ptr;
 use deno_core::v8;
 use deno_core::webidl::ContextFn;
@@ -11,6 +10,7 @@ use deno_core::webidl::IntOptions;
 use deno_core::webidl::WebIdlConverter;
 use deno_core::webidl::WebIdlError;
 use deno_core::webidl::WebIdlErrorKind;
+use deno_core::WebIDL;
 use deno_error::JsErrorBox;
 
 #[derive(WebIDL)]

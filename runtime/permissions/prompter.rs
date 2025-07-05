@@ -193,8 +193,8 @@ fn clear_stdin(
   use winapi::um::wincontypes::INPUT_RECORD;
   use winapi::um::wincontypes::KEY_EVENT;
   use winapi::um::winnt::HANDLE;
-  use winapi::um::winuser::MAPVK_VK_TO_VSC;
   use winapi::um::winuser::MapVirtualKeyW;
+  use winapi::um::winuser::MAPVK_VK_TO_VSC;
   use winapi::um::winuser::VK_RETURN;
 
   // SAFETY: winapi calls

@@ -3,8 +3,6 @@
 use std::borrow::Cow;
 use std::cell::RefCell;
 
-use deno_core::GarbageCollected;
-use deno_core::WebIDL;
 use deno_core::cppgc::Ptr;
 use deno_core::op2;
 use deno_core::v8;
@@ -12,6 +10,8 @@ use deno_core::webidl::IntOptions;
 use deno_core::webidl::Nullable;
 use deno_core::webidl::WebIdlConverter;
 use deno_core::webidl::WebIdlError;
+use deno_core::GarbageCollected;
+use deno_core::WebIDL;
 
 use crate::Instance;
 

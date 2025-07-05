@@ -5,6 +5,7 @@ use std::cell::RefCell;
 use std::future::poll_fn;
 use std::rc::Rc;
 
+use deno_core::op2;
 use deno_core::CancelFuture;
 use deno_core::CancelHandle;
 use deno_core::DetachedBuffer;
@@ -12,13 +13,12 @@ use deno_core::OpState;
 use deno_core::RcRef;
 use deno_core::Resource;
 use deno_core::ResourceId;
-use deno_core::op2;
 use serde::Deserialize;
 use serde::Serialize;
-use tokio::sync::mpsc::UnboundedReceiver;
-use tokio::sync::mpsc::UnboundedSender;
 use tokio::sync::mpsc::error::TryRecvError;
 use tokio::sync::mpsc::unbounded_channel;
+use tokio::sync::mpsc::UnboundedReceiver;
+use tokio::sync::mpsc::UnboundedSender;
 
 #[derive(Debug, thiserror::Error, deno_error::JsError)]
 pub enum MessagePortError {

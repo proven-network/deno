@@ -19,9 +19,9 @@ use super::util::napi_set_last_error;
 use super::util::v8_name_from_property_descriptor;
 use crate::check_arg;
 use crate::check_env;
-use crate::function::CallbackInfo;
 use crate::function::create_function;
 use crate::function::create_function_template;
+use crate::function::CallbackInfo;
 use crate::*;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -2354,11 +2354,9 @@ fn napi_wrap(
   }
 
   let external = v8::External::new(&mut env.scope(), reference);
-  assert!(
-    obj
-      .set_private(&mut env.scope(), napi_wrap, external.into())
-      .unwrap()
-  );
+  assert!(obj
+    .set_private(&mut env.scope(), napi_wrap, external.into())
+    .unwrap());
 
   napi_ok
 }
@@ -2398,11 +2396,9 @@ fn unwrap(
   }
 
   if !keep {
-    assert!(
-      obj
-        .delete_private(&mut env.scope(), napi_wrap)
-        .unwrap_or(false)
-    );
+    assert!(obj
+      .delete_private(&mut env.scope(), napi_wrap)
+      .unwrap_or(false));
     unsafe { Reference::remove(reference) };
   }
 

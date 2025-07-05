@@ -1,16 +1,16 @@
 // Copyright 2018-2025 the Deno authors. MIT license.
 
-use deno_core::ToJsBuffer;
 use deno_core::op2;
-use ed448_goldilocks::Scalar;
+use deno_core::ToJsBuffer;
 use ed448_goldilocks::curve::MontgomeryPoint;
+use ed448_goldilocks::Scalar;
 use elliptic_curve::pkcs8::PrivateKeyInfo;
 use elliptic_curve::subtle::ConstantTimeEq;
-use rand::RngCore;
 use rand::rngs::OsRng;
+use rand::RngCore;
+use spki::der::asn1::BitString;
 use spki::der::Decode;
 use spki::der::Encode;
-use spki::der::asn1::BitString;
 
 #[derive(Debug, thiserror::Error, deno_error::JsError)]
 pub enum X448Error {

@@ -13,31 +13,31 @@ use deno_path_util::url_to_file_path;
 use import_map::ImportMapWithDiagnostics;
 use indexmap::IndexMap;
 use jsonc_parser::ParseResult;
-use serde::Deserialize;
-use serde::Deserializer;
-use serde::Serialize;
 use serde::de;
 use serde::de::Unexpected;
 use serde::de::Visitor;
-use serde_json::Value;
+use serde::Deserialize;
+use serde::Deserializer;
+use serde::Serialize;
 use serde_json::json;
+use serde_json::Value;
 use sys_traits::FsRead;
 use thiserror::Error;
 use url::Url;
 
-use crate::UrlToFilePathError;
 use crate::glob::FilePatterns;
 use crate::glob::PathOrPatternSet;
 use crate::util::is_skippable_io_error;
+use crate::UrlToFilePathError;
 
 mod ts;
 
+pub use ts::parse_compiler_options;
 pub use ts::CompilerOptions;
 pub use ts::EmitConfigOptions;
 pub use ts::IgnoredCompilerOptions;
 pub use ts::ParsedCompilerOptions;
 pub use ts::RawJsxCompilerOptions;
-pub use ts::parse_compiler_options;
 
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq)]
 #[serde(default, deny_unknown_fields)]
@@ -2385,10 +2385,8 @@ mod tests {
 
   #[test]
   fn files_pattern_matches_remote() {
-    assert!(
-      FilePatterns::new_with_base(PathBuf::from("/"))
-        .matches_specifier(&Url::parse("https://example.com/mod.ts").unwrap())
-    );
+    assert!(FilePatterns::new_with_base(PathBuf::from("/"))
+      .matches_specifier(&Url::parse("https://example.com/mod.ts").unwrap()));
   }
 
   #[test]

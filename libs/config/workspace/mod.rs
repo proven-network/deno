@@ -17,15 +17,15 @@ use deno_path_util::url_from_directory_path;
 use deno_path_util::url_from_file_path;
 use deno_path_util::url_parent;
 use deno_path_util::url_to_file_path;
+use deno_semver::package::PackageNv;
+use deno_semver::package::PackageReq;
 use deno_semver::RangeSetOrTag;
 use deno_semver::Version;
 use deno_semver::VersionReq;
-use deno_semver::package::PackageNv;
-use deno_semver::package::PackageReq;
+use discovery::discover_workspace_config_files;
 use discovery::ConfigFileDiscovery;
 use discovery::ConfigFolder;
 use discovery::DenoOrPkgJson;
-use discovery::discover_workspace_config_files;
 use indexmap::IndexMap;
 use indexmap::IndexSet;
 use serde_json::json;
@@ -35,7 +35,6 @@ use sys_traits::FsReadDir;
 use thiserror::Error;
 use url::Url;
 
-use crate::UrlToFilePathError;
 use crate::deno_json;
 use crate::deno_json::BenchConfig;
 use crate::deno_json::CompilerOptionTypesDeserializeError;
@@ -64,6 +63,7 @@ use crate::glob::PathOrPattern;
 use crate::glob::PathOrPatternParseError;
 use crate::glob::PathOrPatternSet;
 use crate::sync::new_rc;
+use crate::UrlToFilePathError;
 
 mod discovery;
 
@@ -3568,11 +3568,9 @@ pub mod test {
     );
 
     // will match because it was unexcluded in the member
-    assert!(
-      lint_config
-        .files
-        .matches_path(&root_dir().join("member/vendor"), PathKind::Directory)
-    )
+    assert!(lint_config
+      .files
+      .matches_path(&root_dir().join("member/vendor"), PathKind::Directory))
   }
 
   #[test]
@@ -5184,8 +5182,8 @@ pub mod test {
   }
 
   #[test]
-  fn test_npm_workspace_start_deno_json_part_of_workspace_sub_folder_other_deno_json()
-   {
+  fn test_npm_workspace_start_deno_json_part_of_workspace_sub_folder_other_deno_json(
+  ) {
     let sys = InMemorySys::default();
     sys.fs_insert_json(
       root_dir().join("package.json"),

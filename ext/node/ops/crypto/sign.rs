@@ -3,8 +3,8 @@ use core::ops::Add;
 
 use ecdsa::der::MaxOverhead;
 use ecdsa::der::MaxSize;
-use elliptic_curve::FieldBytesSize;
 use elliptic_curve::generic_array::ArrayLength;
+use elliptic_curve::FieldBytesSize;
 use rand::rngs::OsRng;
 use rsa::signature::hazmat::PrehashSigner as _;
 use rsa::signature::hazmat::PrehashVerifier as _;

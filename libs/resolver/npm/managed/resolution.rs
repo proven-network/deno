@@ -1,9 +1,5 @@
 // Copyright 2018-2025 the Deno authors. MIT license.
 
-use deno_npm::NpmPackageCacheFolderId;
-use deno_npm::NpmPackageId;
-use deno_npm::NpmResolutionPackage;
-use deno_npm::NpmSystemInfo;
 use deno_npm::resolution::NpmPackagesPartitioned;
 use deno_npm::resolution::NpmResolutionSnapshot;
 use deno_npm::resolution::PackageCacheFolderIdNotFoundError;
@@ -11,6 +7,10 @@ use deno_npm::resolution::PackageNotFoundFromReferrerError;
 use deno_npm::resolution::PackageNvNotFoundError;
 use deno_npm::resolution::PackageReqNotFoundError;
 use deno_npm::resolution::ValidSerializedNpmResolutionSnapshot;
+use deno_npm::NpmPackageCacheFolderId;
+use deno_npm::NpmPackageId;
+use deno_npm::NpmResolutionPackage;
+use deno_npm::NpmSystemInfo;
 use deno_semver::package::PackageNv;
 use deno_semver::package::PackageReq;
 use parking_lot::RwLock;

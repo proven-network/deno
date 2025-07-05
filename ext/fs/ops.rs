@@ -12,6 +12,8 @@ use std::path::StripPrefixError;
 use std::rc::Rc;
 
 use boxed_error::Boxed;
+use deno_core::error::ResourceError;
+use deno_core::op2;
 use deno_core::CancelFuture;
 use deno_core::CancelHandle;
 use deno_core::FastString;
@@ -19,24 +21,22 @@ use deno_core::JsBuffer;
 use deno_core::OpState;
 use deno_core::ResourceId;
 use deno_core::ToJsBuffer;
-use deno_core::error::ResourceError;
-use deno_core::op2;
 use deno_error::JsErrorBox;
 use deno_io::fs::FileResource;
 use deno_io::fs::FsError;
 use deno_io::fs::FsStat;
 use deno_permissions::PermissionCheckError;
-use rand::Rng;
 use rand::rngs::ThreadRng;
 use rand::thread_rng;
+use rand::Rng;
 use serde::Serialize;
 
-use crate::FsPermissions;
-use crate::OpenOptions;
 use crate::interface::AccessCheckFn;
 use crate::interface::FileSystemRc;
 use crate::interface::FsDirEntry;
 use crate::interface::FsFileType;
+use crate::FsPermissions;
+use crate::OpenOptions;
 
 #[derive(Debug, Boxed, deno_error::JsError)]
 pub struct FsOpsError(pub Box<FsOpsErrorKind>);
