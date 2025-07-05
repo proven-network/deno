@@ -10,7 +10,7 @@ use deno_core::v8;
 use deno_core::v8_static_strings;
 use deno_core::FromV8;
 use deno_core::GarbageCollected;
-use libsql_ffi as ffi;
+use rusqlite::ffi;
 
 use super::validators;
 use super::SqliteError;

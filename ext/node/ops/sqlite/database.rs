@@ -580,35 +580,38 @@ impl DatabaseSync {
       e_conflict: i32,
       _: *mut libsql_ffi::sqlite3_changeset_iter,
     ) -> i32 {
-      let ctx = &mut *(p_ctx as *mut HandlerCtx);
+      #[allow(clippy::undocumented_unsafe_blocks)]
+      unsafe {
+        let ctx = &mut *(p_ctx as *mut HandlerCtx);
 
-      if let Some(conflict) = &mut ctx.confict {
-        let recv = v8::undefined(ctx.scope).into();
-        let args = [v8::Integer::new(ctx.scope, e_conflict).into()];
+        if let Some(conflict) = &mut ctx.confict {
+          let recv = v8::undefined(ctx.scope).into();
+          let args = [v8::Integer::new(ctx.scope, e_conflict).into()];
 
-        let tc_scope = &mut v8::TryCatch::new(ctx.scope);
+          let tc_scope = &mut v8::TryCatch::new(ctx.scope);
 
-        let ret = conflict
-          .call(tc_scope, recv, &args)
-          .unwrap_or_else(|| v8::undefined(tc_scope).into());
-        if tc_scope.has_caught() {
-          tc_scope.rethrow();
-          return libsql_ffi::SQLITE_CHANGESET_ABORT;
+          let ret = conflict
+            .call(tc_scope, recv, &args)
+            .unwrap_or_else(|| v8::undefined(tc_scope).into());
+          if tc_scope.has_caught() {
+            tc_scope.rethrow();
+            return libsql_ffi::SQLITE_CHANGESET_ABORT;
+          }
+
+          const INVALID_VALUE: i32 = -1;
+          if !ret.is_int32() {
+            return INVALID_VALUE;
+          }
+
+          let value = ret
+            .int32_value(tc_scope)
+            .unwrap_or(libsql_ffi::SQLITE_CHANGESET_ABORT);
+
+          return value;
         }
 
-        const INVALID_VALUE: i32 = -1;
-        if !ret.is_int32() {
-          return INVALID_VALUE;
-        }
-
-        let value = ret
-          .int32_value(tc_scope)
-          .unwrap_or(libsql_ffi::SQLITE_CHANGESET_ABORT);
-
-        return value;
+        libsql_ffi::SQLITE_CHANGESET_ABORT
       }
-
-      libsql_ffi::SQLITE_CHANGESET_ABORT
     }
 
     // Filter handler callback for `sqlite3changeset_apply()`.
@@ -616,19 +619,22 @@ impl DatabaseSync {
       p_ctx: *mut c_void,
       z_tab: *const c_char,
     ) -> i32 {
-      let ctx = &mut *(p_ctx as *mut HandlerCtx);
+      #[allow(clippy::undocumented_unsafe_blocks)]
+      unsafe {
+        let ctx = &mut *(p_ctx as *mut HandlerCtx);
 
-      if let Some(filter) = &mut ctx.filter {
-        let tab = CStr::from_ptr(z_tab).to_str().unwrap();
+        if let Some(filter) = &mut ctx.filter {
+          let tab = CStr::from_ptr(z_tab).to_str().unwrap();
 
-        let recv = v8::undefined(ctx.scope).into();
-        let args = [v8::String::new(ctx.scope, tab).unwrap().into()];
+          let recv = v8::undefined(ctx.scope).into();
+          let args = [v8::String::new(ctx.scope, tab).unwrap().into()];
 
-        let ret = filter.call(ctx.scope, recv, &args).unwrap();
-        return ret.boolean_value(ctx.scope) as i32;
+          let ret = filter.call(ctx.scope, recv, &args).unwrap();
+          return ret.boolean_value(ctx.scope) as i32;
+        }
+
+        1
       }
-
-      1
     }
 
     let db = self.conn.borrow();

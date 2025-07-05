@@ -11,7 +11,7 @@ use deno_core::v8::GetPropertyNamesArgs;
 use deno_core::v8_static_strings;
 use deno_core::GarbageCollected;
 use deno_core::ToV8;
-use libsql_ffi as ffi;
+use rusqlite::ffi;
 
 use super::validators;
 use super::SqliteError;

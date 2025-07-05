@@ -6,10 +6,10 @@ use deno_core::error::AnyError;
 use deno_lib::worker::LibWorkerFactoryRoots;
 use deno_runtime::WorkerExecutionMode;
 
-use crate::args::jsr_api_url;
 use crate::args::DenoSubcommand;
 use crate::args::Flags;
 use crate::args::RunFlags;
+use crate::args::jsr_api_url;
 use crate::factory::CliFactory;
 use crate::registry;
 use crate::tools;
@@ -37,6 +37,7 @@ pub async fn deploy(
     ),
     watch: None,
     bare: false,
+    coverage_dir: None,
   });
 
   tools::run::run_script(

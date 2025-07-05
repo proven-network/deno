@@ -6,6 +6,118 @@ https://github.com/denoland/deno/releases
 We also have one-line install commands at:
 https://github.com/denoland/deno_install
 
+### 2.4.0 / 2025.07.01
+
+- feat(bundle): support text and bytes imports in bundle (#29908)
+- feat(check): tsconfig "references", "extends", "files", "include" and
+  "exclude" (#29843)
+- feat(cli): add `--coverage` flag to `deno run` command (#29329)
+- feat(cli): alias --unstable-sloppy-imports to --sloppy-imports (#29780)
+- feat(ext/http): support `onListen()` callback in `deno serve` (#29449)
+- feat(fmt): add support for .xml, .svg and .mustache files (#29851)
+- feat(fmt): remove UTF-8 BOM instead of maintaining it (#29796)
+- feat(node API): add `fs.glob`, `fs.globSync`, `fs.promises.glob` (#28972)
+- feat(otel): stabilize OpenTelemetry support (#29822)
+- feat(process): add detached option to `Deno.Command` (#29933)
+- feat(run): resolve main module with workspace resolver (#29928)
+- feat(signals): support listening for ctrl+close on Windows (#27880)
+- feat(unstable): add DENO_NODE_CONDITIONS env var (#29848)
+- feat(unstable): bytes and text imports (#29855)
+- feat(unstable): support bytes and text imports in `deno compile` (#29924)
+- feat: --allow-net supports CIDR ranges (#29704)
+- feat: Add --deny-import flag (#29702)
+- feat: Deno.execPath() no longer requires --allow-read permission (#29620)
+- feat: add 'deno update' subcommand (#29187)
+- feat: add `DENO_AUTO_SERVE` env var (#29852)
+- feat: add `DENO_COMPAT` env var (#29889)
+- feat: add support for --preload/--import flag (#29626)
+- feat: deprecate --unstable-node-globals flag (#29887)
+- feat: make 'Buffer' and 'global' available as globals (#29416)
+- feat: make `setImmediate` and `clearImmediate` as globals (#29877)
+- feat: rename --unstable-node-conditions to --unstable-conditions (#29885)
+- feat: stabilize --allow-net subdomain wildcards (#29902)
+- feat: stabilize --node-conditions flag (#29628)
+- feat: unflag the deploy subcommand (#29863)
+- fix(bench): Make output table markdown compatible (#29532)
+- fix(bundle): only replace require shim in js files, spruce up output (#29892)
+- fix(check): don't detect tsconfigs with no deno.json/package.json or
+  --no-config (#29925)
+- fix(coverage): Make output table markdown compatible (#29533)
+- fix(ext/node): add `lchmod`, `lchmod` promise, `lchmodSync` to `node:fs`
+  (#29833)
+- fix(ext/node): add type check to LibuvStreamWrap.writeBuffer (#29879)
+- fix(ext/node): don't show deprecation warnings for dependencies (#29909)
+- fix(ext/node): export promise based `lchown` and `lutimes` from
+  `node:fs/promises` (#29870)
+- fix(ext/node): fix reference error in node:stream (#29894)
+- fix(ext/node): improve assert.fail (#29850)
+- fix(ext/node): improve input validations of stream/consumers (#29880)
+- fix(ext/node): keep BOM in buffer.toString('utf8') (#29896)
+- fix(ext/node): remove duplicated stream classes (#29860)
+- fix(fmt/css): prefer collapsing font-family values (#29864)
+- fix(install): purge more packages from lockfile on config change (#29953)
+- fix(install/global): resolve bin name from npm packument (#29884)
+- fix(lsp): don't show no-export diagnostics for type-only npm imports (#29888)
+- fix(node): use primordials more consistently in `_events.mjs` (#29930)
+- fix(publish): disallow publishing with bytes or text imports (#29954)
+- fix: support `Deno.permissions.query({name:"import"})` (#29610)
+- perf: skip loading bytes and text imports into memory when already cached and
+  building module graph (#29931)
+
+### 2.3.7 / 2025.06.23
+
+- feat(unstable): add `--platform` flag to deno bundle (#29697)
+- feat(unstable): add `--sourcemap` flag to deno bundle (#29735)
+- feat(unstable): add watch mode to deno bundle (#29795)
+- feat: allow base64 ca cert in args (#29814)
+- fix(bundle): enable sloppy imports by default when bundling (#29731)
+- fix(bundle): improve error handling and reporting (#29744)
+- fix(bundle): parse the allow-import flag, fix example in help text (#29733)
+- fix(bundle): transform import.meta.main (#29830)
+- fix(ext/napi): ensure the finalizer callback will be called (#29710)
+- fix(ext/node): DiffieHellman constructor behaviors (#29718)
+- fix(ext/node): Fix `crypto.pbkdf2` compat (#29738)
+- fix(ext/node): Module.wrap cleanup for npm:v8-code-cache (#29725)
+- fix(ext/node): add `fchmod` and `fchmodSync` (#29791)
+- fix(ext/node): add key length validation in
+  `DiffieHellman.prototype.computeSecret` (#29757)
+- fix(ext/node): add validation to Cipheriv methods (#29800)
+- fix(ext/node): crypto.timingSafeEqual (#29758)
+- fix(ext/node): deprecate Hash and Hmac constructors (#29774)
+- fix(ext/node): fix assertion error message of assert.ok (#29803)
+- fix(ext/node): fix error type in DiffieHellman constructor (#29721)
+- fix(ext/node): fix events.once (#29716)
+- fix(ext/node): fix input validation of crypto hkdf (#29775)
+- fix(ext/node): fix oneshot hash validation (#29661)
+- fix(ext/node): implement Certificate API (#29828)
+- fix(ext/node): improve assert.ifError (#29846)
+- fix(ext/node): improve comparison of faked objects in `deepStrictEqual`
+  (#29819)
+- fix(ext/node): improve scrypt support (#29773)
+- fix(ext/node): support KeyObject in publicEncrypt/privateDecrypt (#29798)
+- fix(ext/node): throw invalid state from `getAuthTag` (#29752)
+- fix(ext/node): use primordials in
+  `ext/node/polyfills/internal/event_target.mjs` (#29772)
+- fix(ext/node): use primordials in `ext/node/polyfills/internal/fs/utils.mjs`
+  (#29708)
+- fix(ext/node): validate auth tag for GCM mode cipher (#29739)
+- fix(fmt): fix handling of indent inside template language (#29616)
+- fix(fmt): handle TS as syntax in Svelte each block (#29789)
+- fix(install): ignore unknown JSR export errors on top level install (#29807)
+- fix(install): infer name from @scope/cli pattern (#29694)
+- fix(install,outdated): try to avoid building graph with incorrect exports
+  (#29713)
+- fix(jsr): allow using `import.meta.resolve` to resolve non-jsr remote urls
+  (#29831)
+- fix(lsp): respect media type for tsx jupyter cells (#29712)
+- fix(npm): support resolving npm specifiers not in graph with
+  `import.meta.resolve` for resolved packages (#29732)
+- fix: `import.meta.resolve` - do not error for non-existent files in npm
+  packages (#29741)
+- fix: do not panic when logging from outside a tokio runtime (#29728)
+- fix: move win32job under windows dependencies in tests/util/server (#29745)
+- fix: remove `self` from global middleware (#29734)
+
 ### 2.3.6 / 2025.06.12
 
 - feat(bundle, unstable): bundling backed by esbuild (#29470)
