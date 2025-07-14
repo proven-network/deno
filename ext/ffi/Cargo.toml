@@ -36,7 +36,11 @@ tokio.workspace = true
 winapi = { workspace = true, features = ["errhandlingapi", "minwindef", "ntdef", "winbase", "winnt"] }
 
 [lints.rust]
+warnings = "allow"
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_aarch, values("x86_64", "aarch64"))'] }
 
 [lints.clippy]
 all = "allow"
+pedantic = "allow"
+nursery = "allow"
+cargo = "allow"

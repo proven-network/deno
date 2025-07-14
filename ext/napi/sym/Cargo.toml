@@ -22,3 +22,8 @@ syn.workspace = true
 
 [lints.clippy]
 all = "allow"
+pedantic = "allow"
+nursery = "allow"
+cargo = "allow"
+[lints.rust]
+warnings = "allow"

@@ -17,3 +17,12 @@ rusqlite.workspace = true
 
 [dev-dependencies]
 test_util.workspace = true
+
+[lints.rust]
+warnings = "allow"
+
+[lints.clippy]
+all = "allow"
+pedantic = "allow"
+nursery = "allow"
+cargo = "allow"

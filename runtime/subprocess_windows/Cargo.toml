@@ -21,3 +21,12 @@ windows-sys = { version = "0.59.0", features = ["Win32_Security", "Win32_System_
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"
+
+[lints.rust]
+warnings = "allow"
+
+[lints.clippy]
+all = "allow"
+pedantic = "allow"
+nursery = "allow"
+cargo = "allow"

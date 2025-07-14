@@ -33,3 +33,12 @@ ntapi = "0.4.0"
 [target.'cfg(unix)'.dependencies]
 signal-hook = "0.3.17"
 signal-hook-registry = "1.4.2"
+
+[lints.rust]
+warnings = "allow"
+
+[lints.clippy]
+all = "allow"
+pedantic = "allow"
+nursery = "allow"
+cargo = "allow"

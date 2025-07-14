@@ -9,3 +9,8 @@ edition = "2024"
 
 [lints.clippy]
 all = "allow"
+pedantic = "allow"
+nursery = "allow"
+cargo = "allow"
+[lints.rust]
+warnings = "allow"

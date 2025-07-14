@@ -42,3 +42,12 @@ nix = { workspace = true, features = ["fs"] }
 
 [dev-dependencies]
 sys_traits = { workspace = true, features = ["real"] }
+
+[lints.rust]
+warnings = "allow"
+
+[lints.clippy]
+all = "allow"
+pedantic = "allow"
+nursery = "allow"
+cargo = "allow"

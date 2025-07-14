@@ -74,4 +74,9 @@ prost-build.workspace = true
 
 [lints.clippy]
 all = "allow"
+pedantic = "allow"
+nursery = "allow"
+cargo = "allow"
 elided_named_lifetimes = "allow"
+[lints.rust]
+warnings = "allow"

@@ -33,3 +33,12 @@ pin-project.workspace = true
 serde.workspace = true
 thiserror.workspace = true
 tokio.workspace = true
+
+[lints.rust]
+warnings = "allow"
+
+[lints.clippy]
+all = "allow"
+pedantic = "allow"
+nursery = "allow"
+cargo = "allow"

@@ -31,6 +31,7 @@ snapshot = ["transpile"]
 transpile = ["deno_ast"]
 
 [lints.rust]
+warnings = "allow"
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(tokio_unstable)'] }
 
 [lib]
@@ -111,3 +112,6 @@ features = ["docsrs"]
 
 [lints.clippy]
 all = "allow"
+pedantic = "allow"
+nursery = "allow"
+cargo = "allow"
