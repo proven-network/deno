@@ -34,12 +34,12 @@ pub use std::ptr;
 use std::rc::Rc;
 use std::thread_local;
 
-use deno_core::op2;
-use deno_core::parking_lot::RwLock;
-use deno_core::url::Url;
 use deno_core::ExternalOpsTracker;
 use deno_core::OpState;
 use deno_core::V8CrossThreadTaskSpawner;
+use deno_core::op2;
+use deno_core::parking_lot::RwLock;
+use deno_core::url::Url;
 // Expose common stuff for ease of use.
 // `use deno_napi::*`
 pub use deno_core::v8;

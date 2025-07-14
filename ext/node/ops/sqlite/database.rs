@@ -2,33 +2,33 @@
 
 use std::cell::Cell;
 use std::cell::RefCell;
-use std::ffi::c_char;
-use std::ffi::c_void;
 use std::ffi::CStr;
 use std::ffi::CString;
+use std::ffi::c_char;
+use std::ffi::c_void;
 use std::ptr::null;
 use std::rc::Rc;
 
+use deno_core::FromV8;
+use deno_core::GarbageCollected;
+use deno_core::OpState;
 use deno_core::convert::OptionUndefined;
 use deno_core::cppgc;
 use deno_core::op2;
 use deno_core::v8;
 use deno_core::v8_static_strings;
-use deno_core::FromV8;
-use deno_core::GarbageCollected;
-use deno_core::OpState;
 use deno_permissions::PermissionsContainer;
 use rusqlite::ffi as libsqlite3_sys;
 use rusqlite::ffi::SQLITE_DBCONFIG_DQS_DDL;
 use rusqlite::ffi::SQLITE_DBCONFIG_DQS_DML;
 use rusqlite::limits::Limit;
 
-use super::session::SessionOptions;
-use super::statement::check_error_code2;
-use super::validators;
 use super::Session;
 use super::SqliteError;
 use super::StatementSync;
+use super::session::SessionOptions;
+use super::statement::check_error_code2;
+use super::validators;
 
 const SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION: i32 = 1005;
 const SQLITE_DBCONFIG_ENABLE_ATTACH_WRITE: i32 = 1021;
