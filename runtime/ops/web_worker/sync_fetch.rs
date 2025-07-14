@@ -2,12 +2,12 @@
 
 use std::sync::Arc;
 
+use deno_core::OpState;
 use deno_core::futures::StreamExt;
 use deno_core::op2;
 use deno_core::url::Url;
-use deno_core::OpState;
-use deno_fetch::data_url::DataUrl;
 use deno_fetch::FetchError;
+use deno_fetch::data_url::DataUrl;
 use deno_web::BlobStore;
 use http_body_util::BodyExt;
 use hyper::body::Bytes;

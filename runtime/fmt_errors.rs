@@ -4,8 +4,8 @@ use std::fmt::Write as _;
 
 use color_print::cformat;
 use color_print::cstr;
-use deno_core::error::format_frame;
 use deno_core::error::JsError;
+use deno_core::error::format_frame;
 use deno_terminal::colors;
 
 #[derive(Debug, Clone)]

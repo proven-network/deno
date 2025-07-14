@@ -14,15 +14,15 @@ use deno_npm_cache::NpmCacheSys;
 use deno_npm_cache::TarballCache;
 use deno_resolver::npm::managed::NpmResolutionCell;
 use deno_terminal::colors;
-use futures::stream::FuturesUnordered;
 use futures::StreamExt;
+use futures::stream::FuturesUnordered;
 use sys_traits::OpenOptions;
 
-use crate::lifecycle_scripts::LifecycleScripts;
-use crate::lifecycle_scripts::LifecycleScriptsStrategy;
 use crate::LifecycleScriptsConfig;
 use crate::NpmPackageFsInstaller;
 use crate::PackageCaching;
+use crate::lifecycle_scripts::LifecycleScripts;
+use crate::lifecycle_scripts::LifecycleScriptsStrategy;
 
 /// Resolves packages from the global npm cache.
 pub struct GlobalNpmPackageInstaller<

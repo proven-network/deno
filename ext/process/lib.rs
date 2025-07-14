@@ -18,8 +18,6 @@ use std::process::ExitStatus;
 use std::process::Stdio as StdStdio;
 use std::rc::Rc;
 
-use deno_core::op2;
-use deno_core::serde_json;
 use deno_core::AsyncMutFuture;
 use deno_core::AsyncRefCell;
 use deno_core::JsBuffer;
@@ -28,12 +26,14 @@ use deno_core::RcRef;
 use deno_core::Resource;
 use deno_core::ResourceId;
 use deno_core::ToJsBuffer;
+use deno_core::op2;
+use deno_core::serde_json;
 use deno_error::JsErrorBox;
-use deno_io::fs::FileResource;
 use deno_io::ChildStderrResource;
 use deno_io::ChildStdinResource;
 use deno_io::ChildStdoutResource;
 use deno_io::IntoRawIoHandle;
+use deno_io::fs::FileResource;
 use deno_os::SignalError;
 use deno_permissions::PermissionsContainer;
 use deno_permissions::RunQueryDescriptor;
@@ -1264,8 +1264,8 @@ mod deprecated {
   pub fn kill(pid: i32, signal: &str) -> Result<(), ProcessError> {
     let signo = deno_os::signal::signal_str_to_int(signal)
       .map_err(SignalError::InvalidSignalStr)?;
-    use nix::sys::signal::kill as unix_kill;
     use nix::sys::signal::Signal;
+    use nix::sys::signal::kill as unix_kill;
     use nix::unistd::Pid;
     let sig =
       Signal::try_from(signo).map_err(|e| ProcessError::Nix(JsNixError(e)))?;

@@ -12,9 +12,6 @@ use deno_error::JsError;
 use deno_package_json::PackageJsonDepValue;
 use deno_package_json::PackageJsonDepValueParseError;
 use deno_semver::npm::NpmPackageReqReference;
-use node_resolver::errors::NodeResolveError;
-use node_resolver::errors::PackageSubpathResolveError;
-use node_resolver::errors::UnknownBuiltInNodeModuleError;
 pub use node_resolver::DenoIsBuiltInNodeModuleChecker;
 use node_resolver::InNpmPackageChecker;
 use node_resolver::IsBuiltInNodeModuleChecker;
@@ -25,6 +22,9 @@ use node_resolver::NodeResolverRc;
 use node_resolver::NpmPackageFolderResolver;
 use node_resolver::ResolutionMode;
 use node_resolver::UrlOrPath;
+use node_resolver::errors::NodeResolveError;
+use node_resolver::errors::PackageSubpathResolveError;
+use node_resolver::errors::UnknownBuiltInNodeModuleError;
 use npm::NodeModulesOutOfDateError;
 use npm::NpmReqResolverRc;
 use npm::ResolveIfForNpmPackageErrorKind;
@@ -275,11 +275,11 @@ pub struct RawDenoResolver<
 }
 
 impl<
-    TInNpmPackageChecker: InNpmPackageChecker,
-    TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
-    TNpmPackageFolderResolver: NpmPackageFolderResolver,
-    TSys: DenoResolverSys,
-  >
+  TInNpmPackageChecker: InNpmPackageChecker,
+  TIsBuiltInNodeModuleChecker: IsBuiltInNodeModuleChecker,
+  TNpmPackageFolderResolver: NpmPackageFolderResolver,
+  TSys: DenoResolverSys,
+>
   RawDenoResolver<
     TInNpmPackageChecker,
     TIsBuiltInNodeModuleChecker,

@@ -10,9 +10,9 @@ use deno_path_util::UrlToFilePathError;
 use thiserror::Error;
 use url::Url;
 
-use crate::path::UrlOrPath;
 use crate::NodeResolutionKind;
 use crate::ResolutionMode;
+use crate::path::UrlOrPath;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 #[allow(non_camel_case_types)]

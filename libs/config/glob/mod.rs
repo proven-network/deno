@@ -960,11 +960,9 @@ mod test {
     let temp_dir = TempDir::new().unwrap();
     let patterns = FilePatterns {
       base: temp_dir.path().to_path_buf(),
-      include: Some(PathOrPatternSet::new(vec![PathOrPattern::from_relative(
-        temp_dir.path(),
-        "./sub",
-      )
-      .unwrap()])),
+      include: Some(PathOrPatternSet::new(vec![
+        PathOrPattern::from_relative(temp_dir.path(), "./sub").unwrap(),
+      ])),
       exclude: PathOrPatternSet::new(vec![
         PathOrPattern::from_relative(temp_dir.path(), "./sub/ignored").unwrap(),
         PathOrPattern::from_relative(temp_dir.path(), "!./sub/ignored/test/**")
@@ -1006,11 +1004,9 @@ mod test {
     let temp_dir = TempDir::new().unwrap();
     let patterns = FilePatterns {
       base: temp_dir.path().to_path_buf(),
-      include: Some(PathOrPatternSet::new(vec![PathOrPattern::from_relative(
-        temp_dir.path(),
-        "./sub/**",
-      )
-      .unwrap()])),
+      include: Some(PathOrPatternSet::new(vec![
+        PathOrPattern::from_relative(temp_dir.path(), "./sub/**").unwrap(),
+      ])),
       exclude: PathOrPatternSet::new(vec![
         PathOrPattern::from_relative(temp_dir.path(), "./sub/ignored").unwrap(),
         PathOrPattern::from_relative(temp_dir.path(), "!./sub/ignored/test/**")

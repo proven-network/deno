@@ -7,12 +7,12 @@ use std::rc::Rc;
 use std::sync::Arc;
 
 use async_trait::async_trait;
-use deno_core::op2;
-use deno_core::parking_lot::Mutex;
-use deno_core::url::Url;
 use deno_core::JsBuffer;
 use deno_core::OpState;
 use deno_core::ToJsBuffer;
+use deno_core::op2;
+use deno_core::parking_lot::Mutex;
+use deno_core::url::Url;
 use serde::Deserialize;
 use serde::Serialize;
 use uuid::Uuid;

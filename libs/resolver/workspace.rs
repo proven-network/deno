@@ -24,21 +24,21 @@ use deno_package_json::PackageJsonRc;
 use deno_path_util::url_from_directory_path;
 use deno_path_util::url_from_file_path;
 use deno_path_util::url_to_file_path;
-use deno_semver::jsr::JsrPackageReqReference;
-use deno_semver::package::PackageName;
-use deno_semver::package::PackageReq;
 use deno_semver::RangeSetOrTag;
 use deno_semver::SmallStackString;
 use deno_semver::StackString;
 use deno_semver::Version;
 use deno_semver::VersionReq;
+use deno_semver::jsr::JsrPackageReqReference;
+use deno_semver::package::PackageName;
+use deno_semver::package::PackageReq;
 use deno_terminal::colors;
-use import_map::specifier::SpecifierError;
 use import_map::ImportMap;
 use import_map::ImportMapDiagnostic;
 use import_map::ImportMapError;
 use import_map::ImportMapErrorKind;
 use import_map::ImportMapWithDiagnostics;
+use import_map::specifier::SpecifierError;
 use indexmap::IndexMap;
 use node_resolver::NodeResolutionKind;
 use serde::Deserialize;
@@ -49,8 +49,8 @@ use sys_traits::FsRead;
 use thiserror::Error;
 use url::Url;
 
-use crate::sync::new_rc;
 use crate::sync::MaybeDashMap;
+use crate::sync::new_rc;
 
 #[allow(clippy::disallowed_types)]
 type UrlRc = crate::sync::MaybeArc<Url>;
@@ -1787,8 +1787,8 @@ mod test {
   use deno_path_util::url_from_file_path;
   use deno_semver::VersionReq;
   use serde_json::json;
-  use sys_traits::impls::InMemorySys;
   use sys_traits::FsCanonicalize;
+  use sys_traits::impls::InMemorySys;
   use url::Url;
 
   use super::*;
@@ -2915,11 +2915,11 @@ mod test {
 
     let diagnostics = workspace.workspace.diagnostics();
     assert_eq!(diagnostics.len(), 1);
-    assert!(diagnostics
-      .first()
-      .unwrap()
-      .to_string()
-      .starts_with(r#"Invalid workspace member name "@deno-test/libs/math"."#));
+    assert!(
+      diagnostics.first().unwrap().to_string().starts_with(
+        r#"Invalid workspace member name "@deno-test/libs/math"."#
+      )
+    );
   }
 
   fn create_resolver(

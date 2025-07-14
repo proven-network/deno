@@ -3,13 +3,13 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::env;
+use std::sync::Arc;
 use std::sync::atomic::AtomicI32;
 use std::sync::atomic::Ordering;
-use std::sync::Arc;
 
+use deno_core::OpState;
 use deno_core::op2;
 use deno_core::v8;
-use deno_core::OpState;
 use deno_path_util::normalize_path;
 use deno_permissions::PermissionCheckError;
 use deno_permissions::PermissionsContainer;

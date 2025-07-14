@@ -5,8 +5,8 @@ use std::io::ErrorKind;
 use std::path::Path;
 use std::path::PathBuf;
 
-use base64::prelude::BASE64_STANDARD;
 use base64::Engine;
+use base64::prelude::BASE64_STANDARD;
 use deno_npm::registry::NpmPackageVersionDistInfo;
 use deno_npm::registry::NpmPackageVersionDistInfoIntegrity;
 use deno_semver::package::PackageNv;
@@ -52,15 +52,17 @@ pub enum VerifyAndExtractTarballError {
 }
 
 pub fn verify_and_extract_tarball(
-  sys: &(impl FsCanonicalize
-      + FsCreateDirAll
-      + FsMetadata
-      + FsOpen
-      + FsRename
-      + FsRemoveDirAll
-      + FsRemoveFile
-      + SystemRandom
-      + ThreadSleep),
+  sys: &(
+     impl FsCanonicalize
+     + FsCreateDirAll
+     + FsMetadata
+     + FsOpen
+     + FsRename
+     + FsRemoveDirAll
+     + FsRemoveFile
+     + SystemRandom
+     + ThreadSleep
+   ),
   package_nv: &PackageNv,
   data: &[u8],
   dist_info: &NpmPackageVersionDistInfo,
@@ -421,15 +423,17 @@ mod test {
         "Tarball checksum did not match what was provided by npm registry for package@1.0.0.\n\nExpected: test\nActual: {actual_checksum}"
       ),
     );
-    assert!(verify_tarball_integrity(
-      &package,
-      &Vec::new(),
-      &NpmPackageVersionDistInfoIntegrity::Integrity {
-        algorithm: "sha512",
-        base64_hash: actual_checksum,
-      },
-    )
-    .is_ok());
+    assert!(
+      verify_tarball_integrity(
+        &package,
+        &Vec::new(),
+        &NpmPackageVersionDistInfoIntegrity::Integrity {
+          algorithm: "sha512",
+          base64_hash: actual_checksum,
+        },
+      )
+      .is_ok()
+    );
     let actual_hex = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
     assert_eq!(
       verify_tarball_integrity(
@@ -443,12 +447,14 @@ mod test {
         "Tarball checksum did not match what was provided by npm registry for package@1.0.0.\n\nExpected: test\nActual: {actual_hex}"
       ),
     );
-    assert!(verify_tarball_integrity(
-      &package,
-      &Vec::new(),
-      &NpmPackageVersionDistInfoIntegrity::LegacySha1Hex(actual_hex),
-    )
-    .is_ok());
+    assert!(
+      verify_tarball_integrity(
+        &package,
+        &Vec::new(),
+        &NpmPackageVersionDistInfoIntegrity::LegacySha1Hex(actual_hex),
+      )
+      .is_ok()
+    );
   }
 
   #[test]
