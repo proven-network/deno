@@ -35,6 +35,7 @@ use deno_io::ChildStdoutResource;
 use deno_io::IntoRawIoHandle;
 use deno_io::fs::FileResource;
 use deno_os::SignalError;
+use deno_permissions::PathQueryDescriptor;
 use deno_permissions::PermissionsContainer;
 use deno_permissions::RunQueryDescriptor;
 #[cfg(windows)]
@@ -753,10 +754,10 @@ fn compute_run_cmd_and_check_permissions(
     })?;
   check_run_permission(
     state,
-    &RunQueryDescriptor::Path {
-      requested: arg_cmd.to_string(),
-      resolved: cmd.clone(),
-    },
+    &RunQueryDescriptor::Path(
+      PathQueryDescriptor::new_known_absolute(Cow::Borrowed(&cmd))
+        .with_requested(arg_cmd.to_string()),
+    ),
     &run_env,
     api_name,
   )?;
@@ -877,7 +878,7 @@ fn resolve_cmd(cmd: &str, env: &RunEnv) -> Result<PathBuf, ProcessError> {
 }
 
 fn resolve_path(path: &str, cwd: &Path) -> PathBuf {
-  deno_path_util::normalize_path(cwd.join(path))
+  deno_path_util::normalize_path(Cow::Owned(cwd.join(path))).into_owned()
 }
 
 #[derive(Debug, thiserror::Error, deno_error::JsError)]
