@@ -285,7 +285,7 @@ impl VirtualSymlinkParts {
       path
         .components()
         .filter(|c| !matches!(c, std::path::Component::RootDir))
-        .map(|c| c.as_os_str().to_string_lossy().to_string())
+        .map(|c| c.as_os_str().to_string_lossy().into_owned())
         .collect(),
     )
   }
@@ -359,7 +359,7 @@ impl VfsEntry {
     }
   }
 
-  pub fn as_ref(&self) -> VfsEntryRef {
+  pub fn as_ref(&self) -> VfsEntryRef<'_> {
     match self {
       VfsEntry::Dir(dir) => VfsEntryRef::Dir(dir),
       VfsEntry::File(file) => VfsEntryRef::File(file),

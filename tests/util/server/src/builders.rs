@@ -33,6 +33,7 @@ use crate::lsp::LspClientBuilder;
 use crate::nodejs_org_mirror_unset_url;
 use crate::npm_registry_unset_url;
 use crate::pty::Pty;
+use crate::servers::tsgo_prebuilt_path;
 use crate::strip_ansi_codes;
 use crate::testdata_path;
 use crate::tests_path;
@@ -453,7 +454,7 @@ impl TestCommandBuilder {
   }
 
   pub fn name(mut self, name: impl AsRef<OsStr>) -> Self {
-    self.command_name = name.as_ref().to_string_lossy().to_string();
+    self.command_name = name.as_ref().to_string_lossy().into_owned();
     self
   }
 
@@ -470,7 +471,7 @@ impl TestCommandBuilder {
     self.args_vec.extend(
       args
         .into_iter()
-        .map(|s| s.as_ref().to_string_lossy().to_string()),
+        .map(|s| s.as_ref().to_string_lossy().into_owned()),
     );
     self
   }
@@ -481,7 +482,7 @@ impl TestCommandBuilder {
   {
     self
       .args_vec
-      .push(arg.as_ref().to_string_lossy().to_string());
+      .push(arg.as_ref().to_string_lossy().into_owned());
     self
   }
 
@@ -509,8 +510,8 @@ impl TestCommandBuilder {
     V: AsRef<std::ffi::OsStr>,
   {
     self.envs.insert(
-      key.as_ref().to_string_lossy().to_string(),
-      val.as_ref().to_string_lossy().to_string(),
+      key.as_ref().to_string_lossy().into_owned(),
+      val.as_ref().to_string_lossy().into_owned(),
     );
     self
   }
@@ -521,7 +522,7 @@ impl TestCommandBuilder {
   {
     self
       .envs_remove
-      .insert(key.as_ref().to_string_lossy().to_string());
+      .insert(key.as_ref().to_string_lossy().into_owned());
     self
   }
 
@@ -551,7 +552,7 @@ impl TestCommandBuilder {
   }
 
   pub fn current_dir<P: AsRef<OsStr>>(mut self, dir: P) -> Self {
-    let dir = dir.as_ref().to_string_lossy().to_string();
+    let dir = dir.as_ref().to_string_lossy().into_owned();
     self.cwd = Some(match self.cwd {
       Some(current) => current.join(dir),
       None => PathRef::new(dir),
@@ -867,6 +868,12 @@ impl TestCommandBuilder {
         nodejs_org_mirror_unset_url(),
       );
     }
+    if !envs.contains_key("DENO_TSGO_PATH") {
+      envs.insert(
+        "DENO_TSGO_PATH".to_string(),
+        tsgo_prebuilt_path().to_string(),
+      );
+    }
     for key in &self.envs_remove {
       envs.remove(key);
     }
@@ -948,10 +955,11 @@ impl Drop for TestCommandOutput {
     }
 
     // either the combined output needs to be asserted or both stdout and stderr
-    if let Some(combined) = &self.combined {
-      if !*self.asserted_combined.borrow() && !combined.is_empty() {
-        panic_unasserted_output(self, combined);
-      }
+    if let Some(combined) = &self.combined
+      && !*self.asserted_combined.borrow()
+      && !combined.is_empty()
+    {
+      panic_unasserted_output(self, combined);
     }
     if let Some((stdout, stderr)) = &self.std_out_err {
       if !*self.asserted_stdout.borrow() && !stdout.is_empty() {

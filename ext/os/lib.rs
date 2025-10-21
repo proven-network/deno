@@ -18,7 +18,6 @@ use once_cell::sync::Lazy;
 use serde::Serialize;
 
 mod ops;
-pub mod signal;
 pub mod sys_info;
 
 pub use ops::signal::SignalError;
@@ -152,7 +151,7 @@ fn dt_change_notif(isolate: &mut v8::Isolate, key: &str) {
 #[op2(fast, stack_trace)]
 fn op_set_env(
   state: &mut OpState,
-  scope: &mut v8::HandleScope,
+  scope: &mut v8::PinScope<'_, '_>,
   #[string] key: &str,
   #[string] value: &str,
 ) -> Result<(), OsError> {
@@ -521,7 +520,7 @@ fn get_cpu_usage() -> (std::time::Duration, std::time::Duration) {
 
 #[op2(fast)]
 fn op_runtime_memory_usage(
-  scope: &mut v8::HandleScope,
+  scope: &mut v8::PinScope<'_, '_>,
   #[buffer] out: &mut [f64],
 ) {
   let s = scope.get_heap_statistics();

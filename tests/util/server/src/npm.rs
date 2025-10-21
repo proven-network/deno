@@ -193,10 +193,10 @@ impl TestNpmRegistry {
     let maybe_package_name_with_path = uri_path
       .strip_prefix(&prefix1)
       .or_else(|| uri_path.strip_prefix(&prefix2));
-    if let Some(package_name_with_path) = maybe_package_name_with_path {
-      if package_name_with_path.starts_with("denotest") {
-        return Some(("@types", package_name_with_path));
-      }
+    if let Some(package_name_with_path) = maybe_package_name_with_path
+      && package_name_with_path.starts_with("denotest")
+    {
+      return Some(("@types", package_name_with_path));
     }
 
     let prefix1 = format!("/{}/", "@esbuild");
@@ -296,6 +296,27 @@ fn create_package_version_info(
   let mut version_info: serde_json::Map<String, serde_json::Value> =
     serde_json::from_str(&package_json_text)?;
   version_info.insert("dist".to_string(), dist.into());
+
+  // add a bin entry for a directories.bin package.json entry as this
+  // is what the npm registry does as well
+  if let Some(directories) = version_info.get("directories")
+    && !version_info.contains_key("bin")
+    && let Some(bin) = directories
+      .as_object()
+      .and_then(|o| o.get("bin"))
+      .and_then(|v| v.as_str())
+  {
+    let mut bins = serde_json::Map::new();
+    for entry in std::fs::read_dir(version_folder.join(bin))? {
+      let entry = entry?;
+      let file_name = entry.file_name().to_string_lossy().to_string();
+      bins.insert(
+        file_name.to_string(),
+        format!("{}/{}", bin, file_name).into(),
+      );
+    }
+    version_info.insert("bin".into(), bins.into());
+  }
 
   Ok((tarball_bytes, version_info))
 }
@@ -462,12 +483,11 @@ fn get_npm_package(
   local_path: &str,
   package_name: &str,
 ) -> Result<Option<CustomNpmPackage>> {
-  if package_name.starts_with("@esbuild/") {
-    if let Some(esbuild_package) =
+  if package_name.starts_with("@esbuild/")
+    && let Some(esbuild_package) =
       create_esbuild_package(registry_hostname, package_name)?
-    {
-      return Ok(Some(esbuild_package));
-    }
+  {
+    return Ok(Some(esbuild_package));
   }
 
   let registry_hostname = if package_name == "@denotest/tarballs-privateserver2"
@@ -489,13 +509,14 @@ fn get_npm_package(
   let mut versions = serde_json::Map::new();
   let mut latest_version = semver::Version::parse("0.0.0").unwrap();
   let mut dist_tags = serde_json::Map::new();
+  let mut time = serde_json::Map::new();
   for entry in fs::read_dir(&package_folder)? {
     let entry = entry?;
     let file_type = entry.file_type()?;
     if !file_type.is_dir() {
       continue;
     }
-    let version = entry.file_name().to_string_lossy().to_string();
+    let version = entry.file_name().to_string_lossy().into_owned();
     let version_folder = package_folder.join(&version);
 
     let (tarball_bytes, mut version_info) = create_package_version_info(
@@ -508,34 +529,36 @@ fn get_npm_package(
     tarballs.insert(version.clone(), tarball_bytes);
 
     if let Some(maybe_optional_deps) = version_info.get("optionalDependencies")
+      && let Some(optional_deps) = maybe_optional_deps.as_object()
     {
-      if let Some(optional_deps) = maybe_optional_deps.as_object() {
-        if let Some(maybe_deps) = version_info.get("dependencies") {
-          if let Some(deps) = maybe_deps.as_object() {
-            let mut cloned_deps = deps.to_owned();
-            for (key, value) in optional_deps {
-              cloned_deps.insert(key.to_string(), value.to_owned());
-            }
-            version_info.insert(
-              "dependencies".to_string(),
-              serde_json::to_value(cloned_deps).unwrap(),
-            );
+      if let Some(maybe_deps) = version_info.get("dependencies") {
+        if let Some(deps) = maybe_deps.as_object() {
+          let mut cloned_deps = deps.to_owned();
+          for (key, value) in optional_deps {
+            cloned_deps.insert(key.to_string(), value.to_owned());
           }
-        } else {
           version_info.insert(
             "dependencies".to_string(),
-            serde_json::to_value(optional_deps).unwrap(),
+            serde_json::to_value(cloned_deps).unwrap(),
           );
         }
+      } else {
+        version_info.insert(
+          "dependencies".to_string(),
+          serde_json::to_value(optional_deps).unwrap(),
+        );
       }
     }
 
-    if let Some(publish_config) = version_info.get("publishConfig") {
-      if let Some(tag) = publish_config.get("tag") {
-        if let Some(tag) = tag.as_str() {
-          dist_tags.insert(tag.to_string(), version.clone().into());
-        }
-      }
+    if let Some(publish_config) = version_info.get("publishConfig")
+      && let Some(tag) = publish_config.get("tag")
+      && let Some(tag) = tag.as_str()
+    {
+      dist_tags.insert(tag.to_string(), version.clone().into());
+    }
+
+    if let Some(date) = version_info.get("publishDate") {
+      time.insert(version.clone(), date.clone());
     }
 
     versions.insert(version.clone(), version_info.into());
@@ -554,6 +577,7 @@ fn get_npm_package(
   registry_file.insert("name".to_string(), package_name.to_string().into());
   registry_file.insert("versions".to_string(), versions.into());
   registry_file.insert("dist-tags".to_string(), dist_tags.into());
+  registry_file.insert("time".to_string(), time.into());
   Ok(Some(CustomNpmPackage {
     registry_file: serde_json::to_string(&registry_file).unwrap(),
     tarballs,
